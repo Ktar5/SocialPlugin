@@ -1,5 +1,6 @@
 package com.minecave.social.storage;
 
+import com.minecave.social.chat.channel.Channel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,7 +20,8 @@ public class SocialPlayer {
     private String playerName;
     @Getter
     private String nickname;
-    private Map<String, ChannelSettings> channels;
+    private Map<String, ChannelSettings> channels; //all, including focused
+    private Channel focused; //once theyre talking to
     private Set<UUID> friends, ignored;
 
     public SocialPlayer(UUID playerUUID){

@@ -33,6 +33,6 @@ public class BroadcastMessage extends Message{
 
     @Override
     public String serialize() {
-        return null;//TODO .
+        return null;//TODO
     }
 }

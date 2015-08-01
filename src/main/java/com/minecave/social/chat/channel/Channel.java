@@ -4,6 +4,7 @@ package com.minecave.social.chat.channel;
  * Created by Carter on 7/31/2015.
  */
 
+import com.minecave.social.chat.message.BroadcastMessage;
 import com.minecave.social.chat.message.Message;
 import com.minecave.social.chat.events.ChatSendEvent;
 import com.minecave.social.chat.formatting.Format;
@@ -75,10 +76,7 @@ public class Channel {
      * @param message An Array of Strings representing the body of the message
      */
     public void broadcastMessage(String[] message){
-        Message message = new Message(message);
-
-        Bukkit.getServer().getPluginManager().callEvent(new SendToChannelEvent(finalMessage, null, this));
-
+        Bukkit.getServer().getPluginManager().callEvent(new ChatSendEvent(new BroadcastMessage(message), this.getName()));
         for(String s : finalMessage){
         }
     }

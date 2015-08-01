@@ -1,9 +1,8 @@
 package com.minecave.social.chat.events;
 
 import com.minecave.social.Social;
-import com.minecave.social.chat.message.BroadcastMessage;
-import com.minecave.social.chat.message.Message;
 import com.minecave.social.chat.channel.Channel;
+import com.minecave.social.chat.message.Message;
 import com.minecave.social.chat.message.PlayerMessage;
 import com.minecave.social.storage.SocialPlayer;
 import org.bukkit.event.Cancellable;
@@ -13,6 +12,7 @@ import org.bukkit.event.HandlerList;
 /**
  * Created by Carter on 7/31/2015.
  */
+@Deprecated
 public class ChatSendEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private final String channel;
@@ -34,7 +34,10 @@ public class ChatSendEvent extends Event implements Cancellable {
      * @return The message sender, or null for console.
      */
     public SocialPlayer getSender() {
-        return this.message.getSocialPlayer();
+        if(this.message instanceof PlayerMessage){
+            return ((PlayerMessage) this.message).getSocialPlayer();
+        }
+        return null;
     }
 
     /**
