@@ -12,6 +12,9 @@ public class Format {
 
     public Format(String format){
         this.format = format;
+        for(FormatPart part : FormatPart.values()){
+            this.format = this.format.replaceAll(part.quoted(), part.format);
+        }
     }
 
     public String getFormattedMessage(SocialPlayer sender){

@@ -25,8 +25,6 @@ public class Channel {
     private final Format format;
     @Getter
     private final String name;
-    @Getter
-    private final ChannelType type;
     private final Set<UUID> members;
 
     /**
@@ -34,12 +32,10 @@ public class Channel {
      *
      * @param format Formatting for the chat chat
      * @param name Identifier of hte chat
-     * @param type The chat's type
      */
-    public Channel(Format format, String name, ChannelType type){
+    public Channel(Format format, String name){
         this.format = format;
         this.name = name;
-        this.type = type;
         members = new HashSet<>();
     }
 
@@ -53,6 +49,24 @@ public class Channel {
         if(!members.contains(toAdd)){
             members.add(toAdd);
         }
+    }
+
+    public boolean isInChannel(UUID uuid){
+        return members.contains(uuid);
+    }
+
+    public void removePlayer(UUID toRemove){
+        if(members.contains(toRemove)){
+            members.remove(toRemove);
+        }
+    }
+
+    public boolean canSpeak(Player player){
+        return player.hasPermission(getSendPermission());
+    }
+
+    public boolean canListen(Player player){
+        return player.hasPermission(getReceivePermission());
     }
 
     /**

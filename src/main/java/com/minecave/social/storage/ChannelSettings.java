@@ -10,12 +10,14 @@ public class ChannelSettings {
 
     @Getter
     @Setter
-    private boolean getAlerts;
+    private boolean alerted;
     @Getter
     @Setter
     private boolean active;
-    @Getter
-    @Setter
-    private boolean ignore;
+
+    public ChannelSettings(){
+        alerted = false;
+        active = false;
+    }
 
 }
