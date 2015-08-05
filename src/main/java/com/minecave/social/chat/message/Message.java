@@ -5,6 +5,7 @@ import lombok.Getter;
 /**
  * Created by Carter on 7/31/2015.
  */
+@Deprecated
 public abstract class Message {
     @Getter
     public long time;

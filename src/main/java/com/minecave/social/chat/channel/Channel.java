@@ -4,12 +4,11 @@ package com.minecave.social.chat.channel;
  * Created by Carter on 7/31/2015.
  */
 
-import com.minecave.social.chat.message.BroadcastMessage;
-import com.minecave.social.chat.message.Message;
-import com.minecave.social.chat.events.ChatSendEvent;
+import com.minecave.social.Social;
+import com.minecave.social.chat.filter.ColorFilter;
 import com.minecave.social.chat.formatting.Format;
+import com.minecave.social.storage.SocialPlayer;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
@@ -25,7 +24,11 @@ public class Channel {
     private final Format format;
     @Getter
     private final String name;
-    private final Set<UUID> members;
+    @Getter
+    private final Set<UUID> listeners;
+    @Getter
+    private final Set<UUID> senders;
+    private final boolean isPublic;
 
     /**
      * Construct a chat with all the nuts and bolts
@@ -33,40 +36,23 @@ public class Channel {
      * @param format Formatting for the chat chat
      * @param name Identifier of hte chat
      */
-    public Channel(Format format, String name){
+    public Channel(Format format, String name, boolean isPublic){
         this.format = format;
+        this.isPublic = isPublic;
         this.name = name;
-        members = new HashSet<>();
-    }
-
-    /**
-     * Add a player to the chat
-     * Note: assumes permission checks already took place
-     *
-     * @param toAdd UUID of player to add to this listening chat
-     */
-    public void addPlayer(UUID toAdd){
-        if(!members.contains(toAdd)){
-            members.add(toAdd);
-        }
-    }
-
-    public boolean isInChannel(UUID uuid){
-        return members.contains(uuid);
-    }
-
-    public void removePlayer(UUID toRemove){
-        if(members.contains(toRemove)){
-            members.remove(toRemove);
-        }
+        listeners = senders = new HashSet<>();
     }
 
     public boolean canSpeak(Player player){
-        return player.hasPermission(getSendPermission());
+        return player.hasPermission(getSendPermission()) || isPublic;
     }
 
     public boolean canListen(Player player){
-        return player.hasPermission(getReceivePermission());
+        return player.hasPermission(getReceivePermission()) || isPublic;
+    }
+
+    public boolean isPublic(){
+        return isPublic;
     }
 
     /**
@@ -77,21 +63,13 @@ public class Channel {
      * @param sender  The message sender.
      */
     public void sendMessage(String message, Player sender){
-        String finalMessage;
-        Bukkit.getServer().getPluginManager().callEvent(new ChatSendEvent(new Message(finalMessage, sender), this));
-        //TODO: listen to event and remove links, ips, chat colors, check for similarity
-    }
+        String finalMessage = ColorFilter.filter(sender, message);
+        SocialPlayer player = Social.getInstance().getPlayerCoordinator().getPlayer(sender.getUniqueId());
+        for(UUID uuid : members){
+            SocialPlayer receiver = Social.getInstance().getPlayerCoordinator().getPlayer(uuid);
+            if(!receiver.ignores(sender.getUniqueId())){
 
-    /**
-     * Used to send a broadcast or array of messages. Formatting is not applied to a broadcast!
-     * Broadcasted messages are not checked to remove links, ips, similarities, etc.. are
-     * sent from "console"
-     *
-     * @param message An Array of Strings representing the body of the message
-     */
-    public void broadcastMessage(String[] message){
-        Bukkit.getServer().getPluginManager().callEvent(new ChatSendEvent(new BroadcastMessage(message), this.getName()));
-        for(String s : finalMessage){
+            }
         }
     }
 

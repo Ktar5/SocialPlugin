@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Created by Carter on 7/31/2015.
  */
+@Deprecated
 public class BroadcastMessage extends Message{
 
     private List<String> message;

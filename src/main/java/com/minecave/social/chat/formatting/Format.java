@@ -9,7 +9,6 @@ public class Format {
 
     private String format;
 
-
     public Format(String format){
         this.format = format;
         for(FormatPart part : FormatPart.values()){

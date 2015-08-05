@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Carter on 8/1/2015.
  */
-public class ColorFilter {
+public class ColorFilter{
 
     //Vanilla patterns used to strip existing formats
     static final transient Pattern VANILLA_PATTERN = Pattern.compile("\u00a7+[0-9A-FK-ORa-fk-or]?");
@@ -23,63 +23,22 @@ public class ColorFilter {
 
     static final String permBase = "social.chat";
 
-    //This method is used to simply strip the native minecraft colour codes
-    public static String stripFormat(final String input) {
-        if (input == null) {
-            return null;
-        }
-        return stripColor(input, VANILLA_PATTERN);
-    }
-
-    //This method is used to simply strip the & convention colour codes
-    public static String stripAndFormat(final String input) {
-        if (input == null) {
-            return null;
-        }
-        return stripColor(input, REPLACE_ALL_PATTERN);
-    }
-
-    //This is the general permission sensitive message format function, checks for urls.
-    public static String formatMessage(final Player player, final String permBase, final String input) {
-        if (input == null) {
-            return null;
-        }
-        String message = formatString(player, input);
-        if (!player.hasPermission(permBase + ".url")) {
-            message = AdvertListener.blockURL(message);
-        }
-        return message;
-    }
-
-    //This method is used to simply replace the ess colour codes with minecraft ones, ie &c
-    public static String replaceFormat(final String input) {
-        if (input == null) {
-            return null;
-        }
-        return replaceColor(input, REPLACE_ALL_PATTERN);
-    }
-
-    static String replaceColor(final String input, final Pattern pattern) {
-        return REPLACE_PATTERN.matcher(pattern.matcher(input).replaceAll("\u00a7$1")).replaceAll("&");
-    }
-
-    //This is the general permission sensitive message format function, does not touch urls.
-    public static String formatString(final Player user, final String input) {
+    public static String filter(Player player, String input) {
         if (input == null) {
             return null;
         }
         String message;
-        if (user.hasPermission(permBase + ".color") || user.hasPermission(permBase + ".colour")) {
+        if(player.hasPermission(permBase + ".color")){
             message = replaceColor(input, REPLACE_COLOR_PATTERN);
-        } else {
+        }else{
             message = stripColor(input, VANILLA_COLOR_PATTERN);
         }
-        if (user.hasPermission(permBase + ".magic")) {
+        if(player.hasPermission(permBase + ".magic")){
             message = replaceColor(message, REPLACE_MAGIC_PATTERN);
         } else {
             message = stripColor(message, VANILLA_MAGIC_PATTERN);
         }
-        if (user.hasPermission(permBase + ".format")) {
+        if (player.hasPermission(permBase + ".format")) {
             message = replaceColor(message, REPLACE_FORMAT_PATTERN);
         } else {
             message = stripColor(message, VANILLA_FORMAT_PATTERN);
@@ -87,24 +46,12 @@ public class ColorFilter {
         return message;
     }
 
-    /*public static String stripLogColorFormat(final String input) {
-        if (input == null) {
-            return null;
-        }
-        return stripColor(input, LOGCOLOR_PATTERN);
-    }*/
+    public static String replaceColor(final String input, final Pattern pattern) {
+        return REPLACE_PATTERN.matcher(pattern.matcher(input).replaceAll("\u00a7$1")).replaceAll("&");
+    }
 
     static String stripColor(final String input, final Pattern pattern) {
         return pattern.matcher(input).replaceAll("");
     }
-
-    public static String lastCode(final String input) {
-        int pos = input.lastIndexOf('\u00a7');
-        if (pos == -1 || (pos + 1) == input.length()) {
-            return "";
-        }
-        return input.substring(pos, pos + 2);
-    }
-
 
 }

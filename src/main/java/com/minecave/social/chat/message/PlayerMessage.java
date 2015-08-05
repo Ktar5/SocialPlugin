@@ -10,6 +10,7 @@ import java.util.UUID;
 /**
  * Created by Carter on 7/31/2015.
  */
+@Deprecated
 public class PlayerMessage extends Message {
 
     private final UUID sender;
